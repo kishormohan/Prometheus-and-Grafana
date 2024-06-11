@@ -1,0 +1,297 @@
+Prometheus Installation:
+
+ubuntu@ip-172-31-47-121:~$ sudo useradd \
+    --system \
+    --no-create-home \
+    --shell /bin/false prometheus
+	
+ubuntu@ip-172-31-47-121:~$ wget https://github.com/prometheus/prometheus/releases/download/v2.45.0-rc.1/prometheus-2.45.0-rc.1.linux-amd64.tar.gz
+--2024-06-10 03:03:49--  https://github.com/prometheus/prometheus/releases/download/v2.45.0-rc.1/prometheus-2.45.0-rc.1.linux-amd64.tar.gz
+Resolving github.com (github.com)... 20.27.177.113
+Connecting to github.com (github.com)|20.27.177.113|:443... connected.
+HTTP request sent, awaiting response... 302 Found
+Location: https://objects.githubusercontent.com/github-production-release-asset-2e65be/6838921/d2061657-5af0-4f31-8f3d-e6cf69d7ab83?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=releaseassetproduction%2F20240610%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240610T030349Z&X-Amz-Expires=300&X-Amz-Signature=69d60b9668a6812a0c3b19417244a575c61084e1c79d29653fd0e6f83c3561fc&X-Amz-SignedHeaders=host&actor_id=0&key_id=0&repo_id=6838921&response-content-disposition=attachment%3B%20filename%3Dprometheus-2.45.0-rc.1.linux-amd64.tar.gz&response-content-type=application%2Foctet-stream [following]
+--2024-06-10 03:03:49--  https://objects.githubusercontent.com/github-production-release-asset-2e65be/6838921/d2061657-5af0-4f31-8f3d-e6cf69d7ab83?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=releaseassetproduction%2F20240610%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240610T030349Z&X-Amz-Expires=300&X-Amz-Signature=69d60b9668a6812a0c3b19417244a575c61084e1c79d29653fd0e6f83c3561fc&X-Amz-SignedHeaders=host&actor_id=0&key_id=0&repo_id=6838921&response-content-disposition=attachment%3B%20filename%3Dprometheus-2.45.0-rc.1.linux-amd64.tar.gz&response-content-type=application%2Foctet-stream
+Resolving objects.githubusercontent.com (objects.githubusercontent.com)... 185.199.110.133, 185.199.111.133, 185.199.108.133, ...
+Connecting to objects.githubusercontent.com (objects.githubusercontent.com)|185.199.110.133|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 91185798 (87M) [application/octet-stream]
+Saving to: ‘prometheus-2.45.0-rc.1.linux-amd64.tar.gz’
+
+prometheus-2.45.0-rc.1.linux-amd64.tar.gz                 100%[====================================================================================================================================>]  86.96M  25.1MB/s    in 3.5s
+
+2024-06-10 03:03:53 (25.1 MB/s) - ‘prometheus-2.45.0-rc.1.linux-amd64.tar.gz’ saved [91185798/91185798]
+
+ubuntu@ip-172-31-47-121:~$ tar -xvf prometheus-2.45.0-rc.1.linux-amd64.tar.gz
+prometheus-2.45.0-rc.1.linux-amd64/
+prometheus-2.45.0-rc.1.linux-amd64/prometheus.yml
+prometheus-2.45.0-rc.1.linux-amd64/LICENSE
+prometheus-2.45.0-rc.1.linux-amd64/NOTICE
+prometheus-2.45.0-rc.1.linux-amd64/consoles/
+prometheus-2.45.0-rc.1.linux-amd64/consoles/prometheus-overview.html
+prometheus-2.45.0-rc.1.linux-amd64/consoles/prometheus.html
+prometheus-2.45.0-rc.1.linux-amd64/consoles/node-cpu.html
+prometheus-2.45.0-rc.1.linux-amd64/consoles/index.html.example
+prometheus-2.45.0-rc.1.linux-amd64/consoles/node.html
+prometheus-2.45.0-rc.1.linux-amd64/consoles/node-overview.html
+prometheus-2.45.0-rc.1.linux-amd64/consoles/node-disk.html
+prometheus-2.45.0-rc.1.linux-amd64/prometheus
+prometheus-2.45.0-rc.1.linux-amd64/promtool
+prometheus-2.45.0-rc.1.linux-amd64/console_libraries/
+prometheus-2.45.0-rc.1.linux-amd64/console_libraries/prom.lib
+prometheus-2.45.0-rc.1.linux-amd64/console_libraries/menu.lib
+
+
+ubuntu@ip-172-31-47-121:~$ sudo mkdir -p /data /etc/prometheus
+
+ubuntu@ip-172-31-47-121:~$ sudo mkdir -p /data /etc/prometheus
+ubuntu@ip-172-31-47-121:~$ cd prometheus-2.45.0-rc.1.linux-amd64/
+ubuntu@ip-172-31-47-121:~/prometheus-2.45.0-rc.1.linux-amd64$ sudo mv prometheus promtool /usr/local/bin/
+ubuntu@ip-172-31-47-121:~/prometheus-2.45.0-rc.1.linux-amd64$ sudo mv consoles/ console_libraries/ /etc/prometheus/
+ubuntu@ip-172-31-47-121:~/prometheus-2.45.0-rc.1.linux-amd64$ sudo mv prometheus.yml /etc/prometheus/prometheus.yml
+ubuntu@ip-172-31-47-121:~/prometheus-2.45.0-rc.1.linux-amd64$ sudo chown -R prometheus:prometheus /etc/prometheus/ /data/
+ubuntu@ip-172-31-47-121:~/prometheus-2.45.0-rc.1.linux-amd64$ sudo chown -R prometheus:prometheus /etc/prometheus/ /data/
+
+ubuntu@ip-172-31-47-121:~/prometheus-2.45.0-rc.1.linux-amd64$ prometheus --version
+prometheus, version 2.45.0-rc.1 (branch: HEAD, revision: c858049744a8cdf684a54cf67b8d16a41d69d81d)
+  build user:       root@f475acdf3aa9
+  build date:       20230620-15:20:19
+  go version:       go1.20.5
+  platform:         linux/amd64
+  tags:             netgo,builtinassets,stringlabels
+
+
+Created symlink /etc/systemd/system/multi-user.target.wants/prometheus.service → /etc/systemd/system/prometheus.service.
+root@ip-172-31-47-121:/home/ubuntu/prometheus-2.45.0-rc.1.linux-amd64# sudo systemctl start prometheus
+root@ip-172-31-47-121:/home/ubuntu/prometheus-2.45.0-rc.1.linux-amd64# sudo systemctl status prometheus
+● prometheus.service - Prometheus
+     Loaded: loaded (/etc/systemd/system/prometheus.service; enabled; preset: enabled)
+     Active: active (running) since Mon 2024-06-10 03:11:29 UTC; 7s ago
+   Main PID: 1333 (prometheus)
+      Tasks: 6 (limit: 1130)
+     Memory: 14.7M (peak: 15.0M)
+        CPU: 56ms
+     CGroup: /system.slice/prometheus.service
+             └─1333 /usr/local/bin/prometheus --config.file=/etc/prometheus/prometheus.yml --storage.tsdb.path=/data --web.console.templates=/etc/prometheus/consoles --web.console.libraries=/etc/prometheus/console_libraries --web.>
+
+Jun 10 03:11:30 ip-172-31-47-121 prometheus[1333]: ts=2024-06-10T03:11:30.052Z caller=tls_config.go:274 level=info component=web msg="Listening on" address=[::]:9090
+Jun 10 03:11:30 ip-172-31-47-121 prometheus[1333]: ts=2024-06-10T03:11:30.052Z caller=tls_config.go:277 level=info component=web msg="TLS is disabled." http2=false address=[::]:9090
+Jun 10 03:11:30 ip-172-31-47-121 prometheus[1333]: ts=2024-06-10T03:11:30.052Z caller=head.go:755 level=info component=tsdb msg="WAL segment loaded" segment=0 maxSegment=0
+Jun 10 03:11:30 ip-172-31-47-121 prometheus[1333]: ts=2024-06-10T03:11:30.053Z caller=head.go:792 level=info component=tsdb msg="WAL replay completed" checkpoint_replay_duration=42.594µs wal_replay_duration=1.919854ms wbl_replay_d>
+Jun 10 03:11:30 ip-172-31-47-121 prometheus[1333]: ts=2024-06-10T03:11:30.054Z caller=main.go:1040 level=info fs_type=EXT4_SUPER_MAGIC
+Jun 10 03:11:30 ip-172-31-47-121 prometheus[1333]: ts=2024-06-10T03:11:30.054Z caller=main.go:1043 level=info msg="TSDB started"
+Jun 10 03:11:30 ip-172-31-47-121 prometheus[1333]: ts=2024-06-10T03:11:30.054Z caller=main.go:1224 level=info msg="Loading configuration file" filename=/etc/prometheus/prometheus.yml
+Jun 10 03:11:30 ip-172-31-47-121 prometheus[1333]: ts=2024-06-10T03:11:30.058Z caller=main.go:1261 level=info msg="Completed loading of configuration file" filename=/etc/prometheus/prometheus.yml totalDuration=3.970898ms db_storag>
+Jun 10 03:11:30 ip-172-31-47-121 prometheus[1333]: ts=2024-06-10T03:11:30.058Z caller=main.go:1004 level=info msg="Server is ready to receive web requests."
+Jun 10 03:11:30 ip-172-31-47-121 prometheus[1333]: ts=2024-06-10T03:11:30.058Z caller=manager.go:995 level=info component="rule manager" msg="Starting rule manager..."
+
+
+****************************************************************************************************************************************************************************************************************************************
+Node_Export Installation:
+
+ubuntu@ip-172-31-33-94:~$ sudo useradd \
+    --system \
+    --no-create-home \
+    --shell /bin/false node_exporter
+ubuntu@ip-172-31-33-94:~$ wget https://github.com/prometheus/node_exporter/releases/download/v1.6.0/node_exporter-1.6.0.linux-amd64.tar.gz
+--2024-06-10 03:18:44--  https://github.com/prometheus/node_exporter/releases/download/v1.6.0/node_exporter-1.6.0.linux-amd64.tar.gz
+Resolving github.com (github.com)... 20.27.177.113
+Connecting to github.com (github.com)|20.27.177.113|:443... connected.
+HTTP request sent, awaiting response... 302 Found
+Location: https://objects.githubusercontent.com/github-production-release-asset-2e65be/9524057/0596919f-7be9-4f77-88af-1bfc173d40c7?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=releaseassetproduction%2F20240610%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240610T031844Z&X-Amz-Expires=300&X-Amz-Signature=a6f926e2a913c7f2ec8c196f4f1183b8ed1226cf85495a776019e7aa75196528&X-Amz-SignedHeaders=host&actor_id=0&key_id=0&repo_id=9524057&response-content-disposition=attachment%3B%20filename%3Dnode_exporter-1.6.0.linux-amd64.tar.gz&response-content-type=application%2Foctet-stream [following]
+--2024-06-10 03:18:44--  https://objects.githubusercontent.com/github-production-release-asset-2e65be/9524057/0596919f-7be9-4f77-88af-1bfc173d40c7?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=releaseassetproduction%2F20240610%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240610T031844Z&X-Amz-Expires=300&X-Amz-Signature=a6f926e2a913c7f2ec8c196f4f1183b8ed1226cf85495a776019e7aa75196528&X-Amz-SignedHeaders=host&actor_id=0&key_id=0&repo_id=9524057&response-content-disposition=attachment%3B%20filename%3Dnode_exporter-1.6.0.linux-amd64.tar.gz&response-content-type=application%2Foctet-stream
+Resolving objects.githubusercontent.com (objects.githubusercontent.com)... 185.199.109.133, 185.199.110.133, 185.199.111.133, ...
+Connecting to objects.githubusercontent.com (objects.githubusercontent.com)|185.199.109.133|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 10367009 (9.9M) [application/octet-stream]
+Saving to: ‘node_exporter-1.6.0.linux-amd64.tar.gz’
+
+node_exporter-1.6.0.linux-amd64.tar.gz                    100%[====================================================================================================================================>]   9.89M  --.-KB/s    in 0.07s
+
+2024-06-10 03:18:45 (139 MB/s) - ‘node_exporter-1.6.0.linux-amd64.tar.gz’ saved [10367009/10367009]
+
+ubuntu@ip-172-31-33-94:~$ tar -xvf node_exporter-1.6.0.linux-amd64.tar.gz
+node_exporter-1.6.0.linux-amd64/
+node_exporter-1.6.0.linux-amd64/NOTICE
+node_exporter-1.6.0.linux-amd64/node_exporter
+node_exporter-1.6.0.linux-amd64/LICENSE
+ubuntu@ip-172-31-33-94:~$ sudo mv \
+  node_exporter-1.6.0.linux-amd64/node_exporter \
+  /usr/local/bin/
+ubuntu@ip-172-31-33-94:~$ rm -rf node_exporter*
+ubuntu@ip-172-31-33-94:~$ node_exporter –version
+node_exporter: error: unexpected –version, try --help
+ubuntu@ip-172-31-33-94:~$ node_exporter --version
+node_exporter, version 1.6.0 (branch: HEAD, revision: ff7f9d69b645cb691dd3e84dc3afc88f5c006962)
+  build user:       root@f9c3ed0cfbd3
+  build date:       20230527-12:03:54
+  go version:       go1.20.4
+  platform:         linux/amd64
+  tags:             netgo osusergo static_build
+ubuntu@ip-172-31-33-94:~$ sudo su root
+root@ip-172-31-33-94:/home/ubuntu# vim /etc/systemd/system/node_exporter.service
+root@ip-172-31-33-94:/home/ubuntu# sudo systemctl enable node_exporter
+Created symlink /etc/systemd/system/multi-user.target.wants/node_exporter.service → /etc/systemd/system/node_exporter.service.
+root@ip-172-31-33-94:/home/ubuntu# sudo systemctl start node_exporter
+root@ip-172-31-33-94:/home/ubuntu# sudo systemctl status node_exporter
+● node_exporter.service - Node Exporter
+     Loaded: loaded (/etc/systemd/system/node_exporter.service; enabled; preset: enabled)
+     Active: active (running) since Mon 2024-06-10 03:21:41 UTC; 9s ago
+   Main PID: 1409 (node_exporter)
+      Tasks: 3 (limit: 1130)
+     Memory: 5.7M (peak: 5.9M)
+        CPU: 40ms
+     CGroup: /system.slice/node_exporter.service
+             └─1409 /usr/local/bin/node_exporter --collector.logind
+
+****************************************************************************************************************************************************************************************************************************************
+
+Grafana Installation :
+
+root@ip-172-31-47-121:/home/ubuntu/prometheus-2.45.0-rc.1.linux-amd64# sudo apt-get install -y apt-transport-https software-properties-common
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+Note, selecting 'apt' instead of 'apt-transport-https'
+apt is already the newest version (2.7.14build2).
+apt set to manually installed.
+software-properties-common is already the newest version (0.99.48).
+software-properties-common set to manually installed.
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+root@ip-172-31-47-121:/home/ubuntu/prometheus-2.45.0-rc.1.linux-amd64# wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -
+Warning: apt-key is deprecated. Manage keyring files in trusted.gpg.d instead (see apt-key(8)).
+OK
+root@ip-172-31-47-121:/home/ubuntu/prometheus-2.45.0-rc.1.linux-amd64# echo "deb https://packages.grafana.com/oss/deb stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
+deb https://packages.grafana.com/oss/deb stable main
+root@ip-172-31-47-121:/home/ubuntu/prometheus-2.45.0-rc.1.linux-amd64# sudo apt-get update
+Get:1 https://packages.grafana.com/oss/deb stable InRelease [7661 B]
+Get:2 http://ap-northeast-3.ec2.archive.ubuntu.com/ubuntu noble InRelease [256 kB]
+Get:3 http://ap-northeast-3.ec2.archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+Get:4 http://ap-northeast-3.ec2.archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+Get:5 http://ap-northeast-3.ec2.archive.ubuntu.com/ubuntu noble/main amd64 Packages [1401 kB]
+Get:6 http://ap-northeast-3.ec2.archive.ubuntu.com/ubuntu noble/main Translation-en [513 kB]
+Get:7 http://ap-northeast-3.ec2.archive.ubuntu.com/ubuntu noble/universe amd64 Packages [15.0 MB]
+Get:8 http://security.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+Get:9 http://ap-northeast-3.ec2.archive.ubuntu.com/ubuntu noble/universe Translation-en [5982 kB]
+Get:10 https://packages.grafana.com/oss/deb stable/main amd64 Packages [248 kB]
+Get:11 http://ap-northeast-3.ec2.archive.ubuntu.com/ubuntu noble/universe amd64 Components [3871 kB]
+Get:12 http://ap-northeast-3.ec2.archive.ubuntu.com/ubuntu noble/universe amd64 c-n-f Metadata [301 kB]
+Get:13 http://ap-northeast-3.ec2.archive.ubuntu.com/ubuntu noble/restricted amd64 Packages [93.9 kB]
+Get:14 http://ap-northeast-3.ec2.archive.ubuntu.com/ubuntu noble/restricted Translation-en [18.7 kB]
+Get:15 http://ap-northeast-3.ec2.archive.ubuntu.com/ubuntu noble/multiverse amd64 Packages [269 kB]
+Get:16 http://ap-northeast-3.ec2.archive.ubuntu.com/ubuntu noble/multiverse Translation-en [118 kB]
+Get:17 http://ap-northeast-3.ec2.archive.ubuntu.com/ubuntu noble/multiverse amd64 Components [35.0 kB]
+Get:18 http://ap-northeast-3.ec2.archive.ubuntu.com/ubuntu noble/multiverse amd64 c-n-f Metadata [8328 B]
+Get:19 http://ap-northeast-3.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [146 kB]
+Get:20 http://ap-northeast-3.ec2.archive.ubuntu.com/ubuntu noble-updates/main Translation-en [41.5 kB]
+Get:21 http://ap-northeast-3.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 Components [8564 B]
+Get:22 http://ap-northeast-3.ec2.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [59.4 kB]
+Get:23 http://ap-northeast-3.ec2.archive.ubuntu.com/ubuntu noble-updates/universe Translation-en [22.4 kB]
+Get:24 http://ap-northeast-3.ec2.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Components [45.0 kB]
+Get:25 http://ap-northeast-3.ec2.archive.ubuntu.com/ubuntu noble-updates/universe amd64 c-n-f Metadata [112 B]
+Get:26 http://ap-northeast-3.ec2.archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [51.2 kB]
+Get:27 http://ap-northeast-3.ec2.archive.ubuntu.com/ubuntu noble-updates/restricted Translation-en [10.8 kB]
+Get:28 http://ap-northeast-3.ec2.archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Components [212 B]
+Get:29 http://ap-northeast-3.ec2.archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Components [212 B]
+Get:30 http://ap-northeast-3.ec2.archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 c-n-f Metadata [116 B]
+Get:31 http://ap-northeast-3.ec2.archive.ubuntu.com/ubuntu noble-backports/main amd64 Components [208 B]
+Get:32 http://ap-northeast-3.ec2.archive.ubuntu.com/ubuntu noble-backports/main amd64 c-n-f Metadata [112 B]
+Get:33 http://ap-northeast-3.ec2.archive.ubuntu.com/ubuntu noble-backports/universe amd64 Packages [6840 B]
+Get:34 http://ap-northeast-3.ec2.archive.ubuntu.com/ubuntu noble-backports/universe Translation-en [9652 B]
+Get:35 http://ap-northeast-3.ec2.archive.ubuntu.com/ubuntu noble-backports/universe amd64 Components [17.6 kB]
+Get:36 http://ap-northeast-3.ec2.archive.ubuntu.com/ubuntu noble-backports/universe amd64 c-n-f Metadata [116 B]
+Get:37 http://ap-northeast-3.ec2.archive.ubuntu.com/ubuntu noble-backports/restricted amd64 Components [216 B]
+Get:38 http://ap-northeast-3.ec2.archive.ubuntu.com/ubuntu noble-backports/restricted amd64 c-n-f Metadata [116 B]
+Get:39 http://ap-northeast-3.ec2.archive.ubuntu.com/ubuntu noble-backports/multiverse amd64 Components [212 B]
+Get:40 http://ap-northeast-3.ec2.archive.ubuntu.com/ubuntu noble-backports/multiverse amd64 c-n-f Metadata [116 B]
+Get:41 http://security.ubuntu.com/ubuntu noble-security/main amd64 Packages [129 kB]
+Get:42 http://security.ubuntu.com/ubuntu noble-security/main Translation-en [34.6 kB]
+Get:43 http://security.ubuntu.com/ubuntu noble-security/main amd64 Components [6876 B]
+Get:44 http://security.ubuntu.com/ubuntu noble-security/universe amd64 Packages [40.5 kB]
+Get:45 http://security.ubuntu.com/ubuntu noble-security/universe Translation-en [15.4 kB]
+Get:46 http://security.ubuntu.com/ubuntu noble-security/universe amd64 Components [8632 B]
+Get:47 http://security.ubuntu.com/ubuntu noble-security/universe amd64 c-n-f Metadata [112 B]
+Get:48 http://security.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [51.2 kB]
+Get:49 http://security.ubuntu.com/ubuntu noble-security/restricted Translation-en [10.8 kB]
+Get:50 http://security.ubuntu.com/ubuntu noble-security/restricted amd64 Components [212 B]
+Get:51 http://security.ubuntu.com/ubuntu noble-security/multiverse amd64 Components [208 B]
+Get:52 http://security.ubuntu.com/ubuntu noble-security/multiverse amd64 c-n-f Metadata [116 B]
+Fetched 29.3 MB in 6s (4969 kB/s)
+Reading package lists... Done
+W: https://packages.grafana.com/oss/deb/dists/stable/InRelease: Key is stored in legacy trusted.gpg keyring (/etc/apt/trusted.gpg), see the DEPRECATION section in apt-key(8) for details.
+root@ip-172-31-47-121:/home/ubuntu/prometheus-2.45.0-rc.1.linux-amd64# sudo apt-get -y install grafana
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following additional packages will be installed:
+  musl
+The following NEW packages will be installed:
+  grafana musl
+0 upgraded, 2 newly installed, 0 to remove and 75 not upgraded.
+Need to get 115 MB of archives.
+After this operation, 428 MB of additional disk space will be used.
+Get:1 https://packages.grafana.com/oss/deb stable/main amd64 grafana amd64 11.0.0 [115 MB]
+Get:2 http://ap-northeast-3.ec2.archive.ubuntu.com/ubuntu noble/universe amd64 musl amd64 1.2.4-2 [416 kB]
+Fetched 115 MB in 6s (20.3 MB/s)
+Selecting previously unselected package musl:amd64.
+(Reading database ... 71839 files and directories currently installed.)
+Preparing to unpack .../musl_1.2.4-2_amd64.deb ...
+Unpacking musl:amd64 (1.2.4-2) ...
+Selecting previously unselected package grafana.
+Preparing to unpack .../grafana_11.0.0_amd64.deb ...
+Unpacking grafana (11.0.0) ...
+Setting up musl:amd64 (1.2.4-2) ...
+Setting up grafana (11.0.0) ...
+info: Selecting UID from range 100 to 999 ...
+
+info: Adding system user `grafana' (UID 111) ...
+info: Adding new user `grafana' (UID 111) with group `grafana' ...
+info: Not creating home directory `/usr/share/grafana'.
+### NOT starting on installation, please execute the following statements to configure grafana to start automatically using systemd
+ sudo /bin/systemctl daemon-reload
+ sudo /bin/systemctl enable grafana-server
+### You can start grafana-server by executing
+ sudo /bin/systemctl start grafana-server
+Processing triggers for man-db (2.12.0-4build2) ...
+Scanning processes...
+Scanning linux images...
+
+Running kernel seems to be up-to-date.
+
+No services need to be restarted.
+
+No containers need to be restarted.
+
+No user sessions are running outdated binaries.
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+root@ip-172-31-47-121:/home/ubuntu/prometheus-2.45.0-rc.1.linux-amd64# sudo apt-get -y install grafana
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+grafana is already the newest version (11.0.0).
+0 upgraded, 0 newly installed, 0 to remove and 75 not upgraded.
+root@ip-172-31-47-121:/home/ubuntu/prometheus-2.45.0-rc.1.linux-amd64# sudo systemctl start grafana-server
+root@ip-172-31-47-121:/home/ubuntu/prometheus-2.45.0-rc.1.linux-amd64# sudo systemctl status grafana-server
+● grafana-server.service - Grafana instance
+     Loaded: loaded (/usr/lib/systemd/system/grafana-server.service; disabled; preset: enabled)
+     Active: active (running) since Mon 2024-06-10 05:06:32 UTC; 10s ago
+       Docs: http://docs.grafana.org
+   Main PID: 2337 (grafana)
+      Tasks: 11 (limit: 1130)
+     Memory: 171.8M (peak: 172.0M)
+        CPU: 2.769s
+     CGroup: /system.slice/grafana-server.service
+             └─2337 /usr/share/grafana/bin/grafana server --config=/etc/grafana/grafana.ini --pidfile=/run/grafana/grafana-server.pid --packaging=deb cfg:default.paths.logs=/var/log/grafana cfg:default.paths.data=/var/lib/grafana >
+
+Jun 10 05:06:40 ip-172-31-47-121 grafana[2337]: logger=ngalert.multiorg.alertmanager t=2024-06-10T05:06:40.046799553Z level=info msg="Starting MultiOrg Alertmanager"
+Jun 10 05:06:40 ip-172-31-47-121 grafana[2337]: logger=ngalert.scheduler t=2024-06-10T05:06:40.050352127Z level=info msg="Starting scheduler" tickInterval=10s maxAttempts=1
+Jun 10 05:06:40 ip-172-31-47-121 grafana[2337]: logger=ticker t=2024-06-10T05:06:40.050416392Z level=info msg=starting first_tick=2024-06-10T05:06:50Z
+Jun 10 05:06:40 ip-172-31-47-121 grafana[2337]: logger=provisioning.dashboard t=2024-06-10T05:06:40.088171Z level=info msg="starting to provision dashboards"
+Jun 10 05:06:40 ip-172-31-47-121 grafana[2337]: logger=provisioning.dashboard t=2024-06-10T05:06:40.088928236Z level=info msg="finished to provision dashboards"
+Jun 10 05:06:40 ip-172-31-47-121 grafana[2337]: logger=plugins.update.checker t=2024-06-10T05:06:40.355394793Z level=info msg="Update check succeeded" duration=340.118032ms
+Jun 10 05:06:40 ip-172-31-47-121 grafana[2337]: logger=grafana.update.checker t=2024-06-10T05:06:40.37567987Z level=info msg="Update check succeeded" duration=367.03826ms
+Jun 10 05:06:40 ip-172-31-47-121 grafana[2337]: logger=plugin.angulardetectorsprovider.dynamic t=2024-06-10T05:06:40.497039949Z level=info msg="Patterns update finished" duration=322.762399ms
+Jun 10 05:06:40 ip-172-31-47-121 grafana[2337]: logger=grafana-apiserver t=2024-06-10T05:06:40.983158223Z level=info msg="Adding GroupVersion playlist.grafana.app v0alpha1 to ResourceManager"
+Jun 10 05:06:40 ip-172-31-47-121 grafana[2337]: logger=grafana-apiserver t=2024-06-10T05:06:40.984353352Z level=info msg="Adding GroupVersion featuretoggle.grafana.app v0alpha1 to ResourceManager"
+root@ip-172-31-47-121:/home/ubuntu/prometheus-2.45.0-rc.1.linux-amd64#

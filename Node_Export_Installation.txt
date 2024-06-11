@@ -1,0 +1,56 @@
+Node_Export Installation:
+
+ubuntu@ip-172-31-33-94:~$ sudo useradd \
+    --system \
+    --no-create-home \
+    --shell /bin/false node_exporter
+ubuntu@ip-172-31-33-94:~$ wget https://github.com/prometheus/node_exporter/releases/download/v1.6.0/node_exporter-1.6.0.linux-amd64.tar.gz
+--2024-06-10 03:18:44--  https://github.com/prometheus/node_exporter/releases/download/v1.6.0/node_exporter-1.6.0.linux-amd64.tar.gz
+Resolving github.com (github.com)... 20.27.177.113
+Connecting to github.com (github.com)|20.27.177.113|:443... connected.
+HTTP request sent, awaiting response... 302 Found
+Location: https://objects.githubusercontent.com/github-production-release-asset-2e65be/9524057/0596919f-7be9-4f77-88af-1bfc173d40c7?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=releaseassetproduction%2F20240610%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240610T031844Z&X-Amz-Expires=300&X-Amz-Signature=a6f926e2a913c7f2ec8c196f4f1183b8ed1226cf85495a776019e7aa75196528&X-Amz-SignedHeaders=host&actor_id=0&key_id=0&repo_id=9524057&response-content-disposition=attachment%3B%20filename%3Dnode_exporter-1.6.0.linux-amd64.tar.gz&response-content-type=application%2Foctet-stream [following]
+--2024-06-10 03:18:44--  https://objects.githubusercontent.com/github-production-release-asset-2e65be/9524057/0596919f-7be9-4f77-88af-1bfc173d40c7?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=releaseassetproduction%2F20240610%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240610T031844Z&X-Amz-Expires=300&X-Amz-Signature=a6f926e2a913c7f2ec8c196f4f1183b8ed1226cf85495a776019e7aa75196528&X-Amz-SignedHeaders=host&actor_id=0&key_id=0&repo_id=9524057&response-content-disposition=attachment%3B%20filename%3Dnode_exporter-1.6.0.linux-amd64.tar.gz&response-content-type=application%2Foctet-stream
+Resolving objects.githubusercontent.com (objects.githubusercontent.com)... 185.199.109.133, 185.199.110.133, 185.199.111.133, ...
+Connecting to objects.githubusercontent.com (objects.githubusercontent.com)|185.199.109.133|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 10367009 (9.9M) [application/octet-stream]
+Saving to: ‘node_exporter-1.6.0.linux-amd64.tar.gz’
+
+node_exporter-1.6.0.linux-amd64.tar.gz                    100%[====================================================================================================================================>]   9.89M  --.-KB/s    in 0.07s
+
+2024-06-10 03:18:45 (139 MB/s) - ‘node_exporter-1.6.0.linux-amd64.tar.gz’ saved [10367009/10367009]
+
+ubuntu@ip-172-31-33-94:~$ tar -xvf node_exporter-1.6.0.linux-amd64.tar.gz
+node_exporter-1.6.0.linux-amd64/
+node_exporter-1.6.0.linux-amd64/NOTICE
+node_exporter-1.6.0.linux-amd64/node_exporter
+node_exporter-1.6.0.linux-amd64/LICENSE
+ubuntu@ip-172-31-33-94:~$ sudo mv \
+  node_exporter-1.6.0.linux-amd64/node_exporter \
+  /usr/local/bin/
+ubuntu@ip-172-31-33-94:~$ rm -rf node_exporter*
+ubuntu@ip-172-31-33-94:~$ node_exporter –version
+node_exporter: error: unexpected –version, try --help
+ubuntu@ip-172-31-33-94:~$ node_exporter --version
+node_exporter, version 1.6.0 (branch: HEAD, revision: ff7f9d69b645cb691dd3e84dc3afc88f5c006962)
+  build user:       root@f9c3ed0cfbd3
+  build date:       20230527-12:03:54
+  go version:       go1.20.4
+  platform:         linux/amd64
+  tags:             netgo osusergo static_build
+ubuntu@ip-172-31-33-94:~$ sudo su root
+root@ip-172-31-33-94:/home/ubuntu# vim /etc/systemd/system/node_exporter.service
+root@ip-172-31-33-94:/home/ubuntu# sudo systemctl enable node_exporter
+Created symlink /etc/systemd/system/multi-user.target.wants/node_exporter.service → /etc/systemd/system/node_exporter.service.
+root@ip-172-31-33-94:/home/ubuntu# sudo systemctl start node_exporter
+root@ip-172-31-33-94:/home/ubuntu# sudo systemctl status node_exporter
+● node_exporter.service - Node Exporter
+     Loaded: loaded (/etc/systemd/system/node_exporter.service; enabled; preset: enabled)
+     Active: active (running) since Mon 2024-06-10 03:21:41 UTC; 9s ago
+   Main PID: 1409 (node_exporter)
+      Tasks: 3 (limit: 1130)
+     Memory: 5.7M (peak: 5.9M)
+        CPU: 40ms
+     CGroup: /system.slice/node_exporter.service
+             └─1409 /usr/local/bin/node_exporter --collector.logind
